@@ -45,13 +45,8 @@ employee_attrition_report/
 
 ## Data source
 
-The semantic model imports data from a CSV file configured in `hr-attrition.tmdl`:
-
-```text
-C:\Users\Anna May\Downloads\FANRBF\Datasets\hr-attrition.csv
-```
-
-The source data is not included in this repository. To open or refresh the report on another machine, update the `Source` step in the `hr-attrition` Power Query partition to point to the local HR attrition CSV.
+The semantic model imports data from a CSV file configured in `hr-attrition.tmdl`.
+To open or refresh the report on another machine, update the `Source` step in the `hr-attrition` Power Query partition to point to the local HR attrition CSV.
 
 ### Expected fields
 
