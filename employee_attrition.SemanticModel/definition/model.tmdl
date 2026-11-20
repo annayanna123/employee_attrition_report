@@ -1,0 +1,22 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-PH
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["hr-attrition"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table hr-attrition
+ref table DateTableTemplate_834caf10-b221-4850-8dca-3487ed792a55
+ref table LocalDateTable_4bbb0a84-9683-4aa1-b1c7-a785a5556c48
+ref table LocalDateTable_1bcbbf0e-d8fa-4039-bf13-75200f02bd0e
+
+ref cultureInfo en-US
+

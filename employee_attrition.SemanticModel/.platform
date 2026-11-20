@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "employee_attrition"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "53c89ceb-1b2e-4fae-a64d-0da627f28b16"
+  }
+}

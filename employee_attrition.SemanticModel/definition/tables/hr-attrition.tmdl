@@ -1,0 +1,156 @@
+table hr-attrition
+	lineageTag: c9b2eef7-fc8a-4d32-91f0-9517b9c1ff6c
+
+	measure Headcount = COUNT('hr-attrition'[employee_id])
+		formatString: 0
+		lineageTag: 117948ce-9b34-4a17-98f8-5c03719252b3
+
+	measure Exits = CALCULATE(COUNTROWS('hr-attrition'), 'hr-attrition'[attrition_flag] = "Yes")
+		formatString: 0
+		lineageTag: 30a7ffa2-137b-4a2d-aa70-897b2fff2a45
+
+	measure 'Attrition Rate' = COALESCE(DIVIDE([Exits], [Headcount]), 0)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 50b1e47d-4f03-43f4-a1d5-c945dbbebe84
+
+	measure 'Worst Department' = VAR RankedDepartment = TOPN(1, VALUES('hr-attrition'[department]), [Attrition Rate], DESC) RETURN MAXX(RankedDepartment, 'hr-attrition'[department])
+		lineageTag: 17724dc6-1e0a-46ef-9ad7-8beee913d426
+
+	column employee_id
+		dataType: string
+		lineageTag: 426869f2-527f-4b2f-ba81-10d57f15ccf9
+		summarizeBy: none
+		sourceColumn: employee_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column department
+		dataType: string
+		lineageTag: 73ca8597-0234-4da0-8911-b4bda523cc20
+		summarizeBy: none
+		sourceColumn: department
+
+		annotation SummarizationSetBy = Automatic
+
+	column job_role
+		dataType: string
+		lineageTag: c7f193ad-79b1-44e6-9420-d03c4086c403
+		summarizeBy: none
+		sourceColumn: job_role
+
+		annotation SummarizationSetBy = Automatic
+
+	column hire_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 8558f382-a2be-4958-bbfe-2b047e278e3c
+		summarizeBy: none
+		sourceColumn: hire_date
+
+		variation Variation
+			isDefault
+			relationship: dbbe5bd8-e6df-424e-85fb-7e431113b524
+			defaultHierarchy: LocalDateTable_4bbb0a84-9683-4aa1-b1c7-a785a5556c48.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column exit_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 084edc68-7d13-4f17-9232-b1bdff001e54
+		summarizeBy: none
+		sourceColumn: exit_date
+
+		variation Variation
+			isDefault
+			relationship: 5645f6d4-02a1-4a28-800d-faaa9ff2549f
+			defaultHierarchy: LocalDateTable_1bcbbf0e-d8fa-4039-bf13-75200f02bd0e.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column monthly_salary
+		dataType: int64
+		formatString: 0
+		lineageTag: 53972e3b-cfb1-4924-af05-4c84dc303ed1
+		summarizeBy: sum
+		sourceColumn: monthly_salary
+
+		annotation SummarizationSetBy = Automatic
+
+	column age
+		dataType: int64
+		formatString: 0
+		lineageTag: ac02a16d-1418-4858-8574-2b4f440f8c87
+		summarizeBy: sum
+		sourceColumn: age
+
+		annotation SummarizationSetBy = Automatic
+
+	column gender
+		dataType: string
+		lineageTag: 1a5eb3ad-67aa-4363-808d-b2c65d13ac9b
+		summarizeBy: none
+		sourceColumn: gender
+
+		annotation SummarizationSetBy = Automatic
+
+	column regular_overtime
+		dataType: string
+		lineageTag: 8ac85af4-4c09-4ad1-860a-0821272923c7
+		summarizeBy: none
+		sourceColumn: regular_overtime
+
+		annotation SummarizationSetBy = Automatic
+
+	column job_satisfaction
+		dataType: int64
+		formatString: 0
+		lineageTag: 2c1234d0-8c78-4829-9927-c19f1c4bb4fc
+		summarizeBy: sum
+		sourceColumn: job_satisfaction
+
+		annotation SummarizationSetBy = Automatic
+
+	column attrition_flag
+		dataType: string
+		lineageTag: 551e5a77-89af-4fc6-8eb8-0506f60bc5bd
+		summarizeBy: none
+		sourceColumn: attrition_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column salary_band
+		dataType: string
+		lineageTag: 36a5238e-59b4-4999-8429-9ee48e82f767
+		summarizeBy: none
+		sourceColumn: salary_band
+
+		annotation SummarizationSetBy = Automatic
+
+	column age_range
+		dataType: string
+		lineageTag: 5f8ce588-717a-42fa-b35b-252209bd5272
+		summarizeBy: none
+		sourceColumn: age_range
+
+		annotation SummarizationSetBy = Automatic
+
+	partition hr-attrition = m
+		mode: import
+		source =
+				let
+				  Source = Csv.Document(File.Contents("C:\Users\Anna May\Downloads\FANRBF\Datasets\hr-attrition.csv"), [Delimiter = ",", Columns = 10, QuoteStyle = QuoteStyle.None]),
+				  #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+				  #"Changed column type" = Table.TransformColumnTypes(#"Promoted headers", {{"employee_id", type text}, {"department", type text}, {"job_role", type text}, {"hire_date", type date}, {"exit_date", type date}, {"monthly_salary", Int64.Type}, {"age", Int64.Type}, {"gender", type text}, {"regular_overtime", type text}, {"job_satisfaction", Int64.Type}}, "en-US"),
+				  #"Added custom" = Table.TransformColumnTypes(Table.AddColumn(#"Changed column type", "attrition_flag", each if [exit_date] <> null and [exit_date] <> "" then "Yes" else "No"), {{"attrition_flag", type text}}),
+				  #"Inserted conditional column" = Table.AddColumn(#"Added custom", "salary_band", each if [monthly_salary] < 22000 then "below 22k" else if [monthly_salary] < 32000 then "22k to 32k" else if [monthly_salary] < 45000 then "32k to 45k" else if [monthly_salary] > 45000 then "45k and up" else ""),
+				  #"Inserted conditional column 1" = Table.AddColumn(#"Inserted conditional column", "age_range", each if [age] < 29 then "Young Adults" else if [age] < 44 then "Adults" else if [age] < 59 then "Middle-aged Adults" else if [age] > 59 then "Senior Adults" else "")
+				in
+				  #"Inserted conditional column 1"
+
+	annotation PBI_ResultType = Table
+

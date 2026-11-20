@@ -1,0 +1,48 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "34681ca008b99486e0c0",
+  "displayName": "Page 1",
+  "displayOption": "ActualSize",
+  "height": 1080,
+  "width": 1903,
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "b6b8a810d16c34aab17e",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "hr-attrition"
+              }
+            },
+            "Property": "job_role"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "Drillthrough"
+      }
+    ]
+  },
+  "pageBinding": {
+    "name": "80bf64b7ebee07a10a07",
+    "type": "Drillthrough",
+    "parameters": [
+      {
+        "name": "12438a350688b42a91a5",
+        "boundFilter": "b6b8a810d16c34aab17e",
+        "fieldExpr": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "hr-attrition"
+              }
+            },
+            "Property": "job_role"
+          }
+        }
+      }
+    ],
+    "referenceScope": "CrossReport"
+  }
+}
